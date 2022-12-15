@@ -1,12 +1,13 @@
 package route
 
 import (
+	"fmt"
 	"github.com/asaskevich/govalidator"
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
-	"os"
 	"github.com/puneet105/url-shortner-go/api/database"
 	"github.com/puneet105/url-shortner-go/api/handler"
+	"os"
 	"time"
 )
 
@@ -22,6 +23,7 @@ type response struct {
 	Expiry     	    time.Duration `json:"expiry"`
 }
 
+var filePath = "../data.txt"
 func ShortenUrl(c *fiber.Ctx) error {
 
 	body := new(request)
@@ -29,7 +31,7 @@ func ShortenUrl(c *fiber.Ctx) error {
 	if err != nil{
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error":"cannot parse JSON"})
 	}
-
+	fmt.Println(err)
 	//check if URL is valid
 	if !govalidator.IsURL(body.URL){
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error":"Invalid URL"})
@@ -43,6 +45,7 @@ func ShortenUrl(c *fiber.Ctx) error {
 	//enforce http
 	body.URL = handler.EnforceHTTP(body.URL)
 
+	//generate shot hash value of string
 	var id string
 	if body.CustomShort == ""{
 		id = uuid.New().String()[:6]
@@ -65,6 +68,26 @@ func ShortenUrl(c *fiber.Ctx) error {
 		body.Expiry = 24
 	}
 	err = r.Set(database.Ctx, id, body.URL, body.Expiry*3600*time.Second).Err()
+
+	//writing into a file
+	fmt.Printf("Request received by StoreInFile: shortUrl: %v originalUrl:%v\n", id, body.URL)
+	modifiedData := id + " " + body.URL
+
+	fileHandler, errorResponse := os.OpenFile(filePath, os.O_APPEND|os.O_WRONLY, 0644)
+	if errorResponse != nil {
+		fmt.Println("StoreInFile | Error while opening file", errorResponse)
+	}
+	noOfWrittenBytes, errorResponse := fmt.Fprintln(fileHandler, modifiedData)
+	fmt.Println("No. of bytes written", noOfWrittenBytes)
+	if errorResponse != nil {
+		fmt.Println("StoreInFile | Error while writing to file: %v", errorResponse)
+		fileHandler.Close()
+	}
+	errorResponse = fileHandler.Close()
+	if errorResponse != nil {
+		fmt.Println("StoreInFile | Error while closing file connection", errorResponse)
+	}
+	fmt.Println("Request successfully processed by StoreInFile")
 
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
