@@ -1,28 +1,26 @@
 FROM golang:alpine as builder
 
-RUN mkdir /build
+RUN mkdir -p url-shortner-go/api
 
-ADD . /build/
+ADD . url-shortner-go/api
 
-WORKDIR /build
+COPY .env url-shortner-go/api
 
-RUN go build -o main .
+RUN mv url-shortner-go /usr/local/go/src/ 
 
-#stage 2
+WORKDIR /usr/local/go/src/url-shortner-go/api
 
-FROM alpine
+#RUN go build main.go
 
-RUN adduser -S -D -H -h /app appuser
+RUN GO_ENABLED=0 GOOS=linux GOARCH=amd64 go build main.go
+#FROM alpine:latest
 
-USER appuser
+#COPY --from=builder /usr/local/go/src/url-shortner-go/api/main url-shortner-go/api
 
-COPY . /app
+#COPY --from=builder /usr/local/go/src/url-shortner-go/api/.env url-shortner-go
 
-COPY --from=builder /build/main /app/
+#WORKDIR url-shortner-go
 
+EXPOSE 3001
 
-WORKDIR /app
-
-EXPOSE 3000
-
-CMD ["./main"]
+CMD ["./api"]

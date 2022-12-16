@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"github.com/go-redis/redis/v8"
 	"github.com/gofiber/fiber/v2"
-	"github.com/puneet105/url-shortner-go/api/database"
+	"url-shortner-go/api/database"
 	"log"
 	"os"
 	"strings"

@@ -5,8 +5,8 @@ import (
 	"github.com/asaskevich/govalidator"
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
-	"github.com/puneet105/url-shortner-go/api/database"
-	"github.com/puneet105/url-shortner-go/api/handler"
+	"url-shortner-go/api/database"
+	"url-shortner-go/api/handler"
 	"os"
 	"time"
 )
@@ -23,7 +23,7 @@ type response struct {
 	Expiry     	    time.Duration `json:"expiry"`
 }
 
-var filePath = "../data.txt"
+var filePath = "../api/data.txt"
 func ShortenUrl(c *fiber.Ctx) error {
 
 	body := new(request)
