@@ -5,8 +5,8 @@ import (
 	"github.com/asaskevich/govalidator"
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
-	"url-shortner-go/api/database"
-	"url-shortner-go/api/handler"
+	"github.com/puneet105/url-shortner-go/api/database"
+	"github.com/puneet105/url-shortner-go/api/handler"
 	"os"
 	"time"
 )
@@ -23,7 +23,7 @@ type response struct {
 	Expiry     	    time.Duration `json:"expiry"`
 }
 
-var filePath = "../api/data.txt"
+//var filePath = "./data.txt"
 func ShortenUrl(c *fiber.Ctx) error {
 
 	body := new(request)
@@ -70,6 +70,7 @@ func ShortenUrl(c *fiber.Ctx) error {
 	err = r.Set(database.Ctx, id, body.URL, body.Expiry*3600*time.Second).Err()
 
 	//writing into a file
+/*
 	fmt.Printf("Request received by StoreInFile: shortUrl: %v originalUrl:%v\n", id, body.URL)
 	modifiedData := id + " " + body.URL
 
@@ -88,7 +89,7 @@ func ShortenUrl(c *fiber.Ctx) error {
 		fmt.Println("StoreInFile | Error while closing file connection", errorResponse)
 	}
 	fmt.Println("Request successfully processed by StoreInFile")
-
+*/
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error": "Unable to connect to server",

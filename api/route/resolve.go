@@ -1,14 +1,14 @@
 package route
 
 import (
-	"bufio"
+//	"bufio"
 	"fmt"
 	"github.com/go-redis/redis/v8"
 	"github.com/gofiber/fiber/v2"
-	"url-shortner-go/api/database"
-	"log"
-	"os"
-	"strings"
+	"github.com/puneet105/url-shortner-go/api/database"
+//	"log"
+//	"os"
+//	"strings"
 )
 
 func ResolveUrl(c *fiber.Ctx) error{
@@ -32,6 +32,7 @@ func ResolveUrl(c *fiber.Ctx) error{
 	_ = rIncr.Incr(database.Ctx, "counter")
 
 	//fetch from file
+/*
 	file, err := os.Open(filePath)
 	if err != nil {
 		log.Fatal(err)
@@ -50,6 +51,7 @@ func ResolveUrl(c *fiber.Ctx) error{
 		log.Fatal(err)
 	}
 	fmt.Println("Content retrieved from file",data[value])
+*/
 	fmt.Println("Your Request has been redirected to", value)
 	return c.Redirect(value, 301)
 }

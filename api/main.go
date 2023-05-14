@@ -1,3 +1,4 @@
+
 package main
 
 import (
@@ -5,7 +6,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/joho/godotenv"
-	"url-shortner-go/api/route"
+	"github.com/puneet105/url-shortner-go/api/route"
 	"log"
 	"os"
 )
@@ -16,13 +17,13 @@ func setupRoutes(app *fiber.App){
 }
 
 func main(){
-	err := godotenv.Load()
+	err := godotenv.Load("/url-app/.env")
 	if err != nil{
 		fmt.Println(err)
 	}
 	app := fiber.New()
 	app.Use(logger.New())
 	setupRoutes(app)
-
+	fmt.Println("Port is: ", os.Getenv("APP_PORT"))
 	log.Fatal(app.Listen(os.Getenv("APP_PORT")))
 }

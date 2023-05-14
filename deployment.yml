@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: url-shortner-app-v1
+  labels:
+    app: url-shortner
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: url-shortner
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: url-shortner
+        version: v1
+    spec:
+      containers:
+      - name: url-shortner
+        image: puneet1051996/url-shortner-app:v1
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 3001
+        volumeMounts:
+        - name: config
+          mountPath: "/url-app"
+        command: ["/bin/sh"]
+        args: ["-c", "./main"]
+      volumes:
+      - name: config
+        configMap:
+          name: url-app-config
+
+
