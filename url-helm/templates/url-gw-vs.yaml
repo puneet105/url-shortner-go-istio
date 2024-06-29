@@ -1,0 +1,35 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: {{ .Values.istio.gateway.name }}
+spec:
+  selector:
+    istio: ingressgateway # use istio default controller
+  servers:
+  - port:
+      number: {{ .Values.deployment.port }}
+      name: http
+      protocol: HTTP
+    hosts:
+    - "*"
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: {{ .Values.istio.virtualService.name }}
+spec:
+  hosts:
+  - "*"
+  gateways:
+  - {{ .Values.istio.gateway.name }}
+  http:
+  - match:
+    - uri:
+        exact: /api/v1
+    - uri:
+        prefix: /
+    route:
+    - destination:
+        host: url-shortner-service
+        port:
+          number: {{ .Values.deployment.port }}

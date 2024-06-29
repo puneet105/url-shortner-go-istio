@@ -1,0 +1,10 @@
+apiVersion: v1
+data:
+  .env: |
+    DB_ADDR="10.110.209.148:6379"
+    DB_PASS=""
+    APP_PORT=":3001"
+    DOMAIN="127.0.0.1:80"
+kind: ConfigMap
+metadata:
+  name: {{ .Values.deployment.config.name }}

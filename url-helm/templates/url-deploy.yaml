@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.deployment.name }}
+  labels:
+    app: url-shortner
+    version: v1
+spec:
+  replicas: {{ .Values.deployment.replicas }}
+  selector:
+    matchLabels:
+      app: url-shortner
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: url-shortner
+        version: v1
+    spec:
+      containers:
+      - name: url-shortner
+        image: {{ .Values.deployment.image }}
+        imagePullPolicy: Always
+        ports:
+        - containerPort: {{ .Values.deployment.containerPort }}
+        volumeMounts:
+        - name: config
+          mountPath: "/url-app"
+        command: ["/bin/sh"]
+        args: ["-c", "./main"]
+      volumes:
+      - name: config
+        configMap:
+          name: {{ .Values.deployment.config.name }}
+
+

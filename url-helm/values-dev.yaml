@@ -1,0 +1,17 @@
+deployment:
+  name: url-shortner-app
+  replicas: 2
+  image: puneet1051996/url-shortner-app:v1
+  containerPort: 3001
+  port: 80
+  config:
+    name: url-app-config
+
+service:
+  name: url-shortner-service
+
+istio:
+  gateway:
+    name: url-app-gateway
+  virtualService:
+    name: url-app-vs
